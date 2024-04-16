@@ -12,14 +12,26 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Merge into QA
-        if: github.event.label.name == 'merge-to-qa'
+        if: github.event.label.name == 'merge-to-qa'  # Nombre de la etiqueta aquí
         run: |
           git config --global user.name 'Your Name'
           git config --global user.email 'you@example.com'
-          git remote add upstream https://github.com/documentos-digitales-lab/pruebas-prs.git
+          git remote add upstream https://github.com/original-repo/original-repo.git
           git fetch upstream
           git checkout -b auto-merge/$GITHUB_HEAD_REF upstream/main
-          git merge --no-ff $GITHUB_HEAD_REF
-          git push upstream auto-merge/$GITHUB_HEAD_REF:QA
+
+          # Merge changes
+          if git merge --no-ff $GITHUB_HEAD_REF; then
+            # Successful merge
+            git push upstream auto-merge/$GITHUB_HEAD_REF:main
+          else
+            # Merge conflict
+            echo "Merge conflict, aborting automatic merge."
+            # Optionally, you can notify someone or take other actions here
+          fi
+
+          # Clean up branch
+          git checkout main
+          git branch -D auto-merge/$GITHUB_HEAD_REF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
