@@ -18,12 +18,12 @@ jobs:
           git config --global user.email 'you@example.com'
           git remote add upstream https://github.com/documentos-digitales-lab/pruebas-prs.git
           git fetch upstream
-          git checkout -b auto-merge/$GITHUB_HEAD_REF upstream/main
+          git checkout -b auto-merge/$GITHUB_HEAD_REF upstream/QA
 
           # Merge changes
           if git merge --no-ff $GITHUB_HEAD_REF; then
             # Successful merge
-            git push upstream auto-merge/$GITHUB_HEAD_REF:main
+            git push upstream auto-merge/$GITHUB_HEAD_REF:QA
           else
             # Merge conflict
             echo "Merge conflict, aborting automatic merge."
@@ -31,7 +31,7 @@ jobs:
           fi
 
           # Clean up branch
-          git checkout main
+          git checkout QA
           git branch -D auto-merge/$GITHUB_HEAD_REF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
