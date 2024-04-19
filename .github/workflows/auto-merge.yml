@@ -19,7 +19,8 @@ jobs:
           git rev-parse --abbrev-ref HEAD
           git status
           git fetch
-          git checkout -b auto-merge/$GITHUB_HEAD_REF QA
+          git checkout -b auto-merge/$GITHUB_HEAD_REF
+          git checkout QA
 
           # Merge changes
           if git merge --no-ff $GITHUB_HEAD_REF; then
