@@ -3,7 +3,7 @@ name: Merge PR Changes to Main Branches
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   merge_changes:
