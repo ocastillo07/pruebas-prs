@@ -20,11 +20,10 @@ jobs:
           git status
           git remote add upstream https://github.com/documentos-digitales-lab/pruebas-prs.git
           git fetch upstream
-          git checkout -b auto-merge/$GITHUB_HEAD_REF
-          git checkout QA
+          git checkout -b auto-merge/$GITHUB_HEAD_REF upstream/QA
 
           # Merge changes
-          if git merge --no-ff auto-merge/$GITHUB_HEAD_REF; then
+          if git merge --no-ff --allow-unrelated-histories auto-merge/$GITHUB_HEAD_REF; then
             # Successful merge
             git push upstream auto-merge/$GITHUB_HEAD_REF:QA
           else
