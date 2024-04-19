@@ -18,6 +18,8 @@ jobs:
         run: |
           # Check PR labels
           labels=$(curl -s "${{ github.event.pull_request.url }}/labels" | jq -r '.[].name')
+          echo "LABELS"
+          echo $labels
 
           # Merge changes based on labels
           if [[ $labels == *"merge-to-develop"* ]]; then
