@@ -17,7 +17,7 @@ jobs:
       - name: Merge changes based on PR labels
         run: |
           # Check PR labels
-          test = curl -s "${{ github.event.pull_request.url }}/labels"
+          test = $(curl -s "${{ github.event.pull_request.url }}/labels")
           echo test
           labels=$(curl -s "${{ github.event.pull_request.url }}/labels" | jq -r '.[].name')
           echo "LABELS"
