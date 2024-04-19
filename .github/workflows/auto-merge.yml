@@ -18,9 +18,8 @@ jobs:
           git config --global user.email 'you@example.com'
           git rev-parse --abbrev-ref HEAD
           git status
-          git remote add upstream https://github.com/documentos-digitales-lab/pruebas-prs.git
-          git fetch upstream
-          git checkout -b auto-merge/$GITHUB_HEAD_REF upstream/QA
+          git fetch
+          git checkout -b auto-merge/$GITHUB_HEAD_REF QA
 
           # Merge changes
           if git merge --no-ff $GITHUB_HEAD_REF; then
