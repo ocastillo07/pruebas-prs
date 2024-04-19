@@ -16,6 +16,8 @@ jobs:
         run: |
           git config --global user.name 'Your Name'
           git config --global user.email 'you@example.com'
+          git branch
+          git status
           git remote add upstream https://github.com/documentos-digitales-lab/pruebas-prs.git
           git fetch upstream
           git checkout -b auto-merge/$GITHUB_HEAD_REF upstream/QA
