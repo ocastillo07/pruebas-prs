@@ -1,37 +1,33 @@
-name: Auto Merge on Label
+name: Merge PR Changes to Main Branches
 
 on:
   pull_request:
-    types: [labeled]
+    branches:
+      - main
 
 jobs:
-  merge:
+  merge_changes:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout PR branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Merge into QA
-        if: github.event.label.name == 'merge-to-qa'  # Nombre de la etiqueta aquí
+      - name: Merge changes based on PR labels
         run: |
-          git config --global user.name 'Your Name'
-          git config --global user.email 'you@example.com'
-          git remote add upstream https://github.com/documentos-digitales-lab/pruebas-prs.git
-          git fetch upstream
-          git checkout -b auto-merge/$GITHUB_HEAD_REF upstream/QA
+          # Check PR labels
+          labels=$(curl -s "${{ github.event.pull_request.url }}/labels" | jq -r '.[].name')
 
-          # Merge changes
-          if git merge --no-ff $GITHUB_HEAD_REF; then
-            # Successful merge
-            git push upstream auto-merge/$GITHUB_HEAD_REF:QA
-          else
-            # Merge conflict
-            echo "Merge conflict, aborting automatic merge."
-            # Optionally, you can notify someone or take other actions here
+          # Merge changes based on labels
+          if [[ $labels == *"merge-to-develop"* ]]; then
+            git checkout develop
+            git merge ${{ github.event.pull_request.head.sha }} --no-edit
+            git push
           fi
 
-          # Clean up branch
-          git checkout QA
-          git branch -D auto-merge/$GITHUB_HEAD_REF
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          if [[ $labels == *"merge-to-qa"* ]]; then
+            git checkout QA
+            git merge ${{ github.event.pull_request.head.sha }} --no-edit
+            git push
+          fi
