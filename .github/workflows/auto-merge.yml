@@ -3,7 +3,7 @@ name: Merge PR Changes to Main Branches
 on:
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   merge_changes:
@@ -14,14 +14,14 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Get PR URL
+        id: pr_url
+        run: echo "PR_URL=https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
       - name: Merge changes based on PR labels
         run: |
           # Check PR labels
-          label=$(curl -s "${{ github.event.pull_request.url }}/labels")
-          echo $label
-          labels=$(curl -s "${{ github.event.pull_request.url }}/labels" | jq -r '.[].name')
-          echo "LABELS"
-          echo $labels
+          labels=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
 
           # Merge changes based on labels
           if [[ $labels == *"merge-to-develop"* ]]; then
@@ -30,7 +30,7 @@ jobs:
             git push
           fi
 
-          if [[ $labels == *"merge-to-qa"* ]]; then
+          if [[ $labels == *"merge-to-QA"* ]]; then
             git checkout QA
             git merge ${{ github.event.pull_request.head.sha }} --no-edit
             git push
