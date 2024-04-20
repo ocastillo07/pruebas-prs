@@ -19,24 +19,24 @@ jobs:
           git rev-parse --abbrev-ref HEAD
           git status
           git fetch
-          git checkout -b auto-merge/$GITHUB_HEAD_REF
+          # git checkout -b auto-merge/$GITHUB_HEAD_REF
           git checkout QA
 
           # Merge changes
-          if git merge --no-ff --allow-unrelated-histories auto-merge/$GITHUB_HEAD_REF; then
+          if git merge --no-ff --allow-unrelated-histories $GITHUB_HEAD_REF; then
             # Successful merge
-            git push origin auto-merge/$GITHUB_HEAD_REF:QA
+            git push origin QA
             echo "Merged QA."
           else
             output=$(git merge --no-ff $GITHUB_HEAD_REF)
             echo $output
             # Merge conflict
-            echo "Merge conflict, aborting automatic merge."
+            echo "fallo el Merge conflict, aborting automatic merge."
             # Optionally, you can notify someone or take other actions here
           fi
 
           # Clean up branch
-          git checkout QA
-          git branch -D auto-merge/$GITHUB_HEAD_REF
+          # git checkout QA
+          # git branch -D auto-merge/$GITHUB_HEAD_REF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
