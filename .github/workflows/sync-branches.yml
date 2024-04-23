@@ -20,7 +20,7 @@ jobs:
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git config --global user.name "${GITHUB_ACTOR}"
           git status
-          git pull
+          git pull --rebase
           git checkout $DESTINATION_BRANCH
           git merge --ff-only $SOURCE_BRANCH
           git push origin $DESTINATION_BRANCH
